@@ -11,12 +11,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.*;
 
 
@@ -57,12 +59,47 @@ class EmployeeServiceImplTest {
         // given
         given(employeeRepository.findByEmail(employee.getEmail())).willReturn(Optional.of(employee));
 
+        // exception unnecessaryStubbingException
+        //given(employeeRepository.save(employee)).willReturn(employee);
+
         // when
         assertThrows(EmployeeException.class, () -> employeeService.addEmployee(employee));
 
         // then
         verify(employeeRepository, never()).save(any(Employee.class));
         verifyNoMoreInteractions(employeeRepository);
+    }
+
+    @Test
+    public void givenEmployeeList_whenGetAllEmployees_then_ReturnListOfEmployees() {
+
+        // given
+        Employee employee1 = new Employee(2, "John", "Doe", "john@doe.com");
+        given(employeeRepository.findAll()).willReturn(List.of(employee, employee1));
+
+        // when
+        List<Employee> employeesList = employeeService.getAllEmployees();
+
+        // then
+        assertAll("Getting all emplpoyees",
+                () -> assertEquals(2, employeesList.size()),
+                () -> assertFalse(employeesList.isEmpty()),
+                () -> assertEquals(employee, employeesList.get(0)));
+    }
+
+    @Test
+    public void giveneEmployeeId_whenDeletingAnEmployee_then_ReturnEmpty() {
+
+        // given
+        willDoNothing().given(employeeRepository).deleteById(employee.getId());
+
+        // when
+        employeeService.deleteEmployee(employee.getId());
+
+        // then
+        verify(employeeRepository, times(1)).deleteById(employee.getId());
+        //verifyNoMoreInteractions(employeeRepository);
+
     }
 
 
