@@ -1,5 +1,6 @@
 package be.intecbrussel.hrmanagement.services.impl;
 
+import be.intecbrussel.hrmanagement.exceptions.EmployeeException;
 import be.intecbrussel.hrmanagement.models.Employee;
 import be.intecbrussel.hrmanagement.repositories.EmployeeRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -13,7 +14,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeServiceImplTest {
@@ -45,6 +50,19 @@ class EmployeeServiceImplTest {
 
         // then
         assertThat(savedEmployee).isNotNull();
+    }
+
+    @Test
+    public void givenExistingEmail_whenSavedEmployee_then_ThrowsCustomException() {
+        // given
+        given(employeeRepository.findByEmail(employee.getEmail())).willReturn(Optional.of(employee));
+
+        // when
+        assertThrows(EmployeeException.class, () -> employeeService.addEmployee(employee));
+
+        // then
+        verify(employeeRepository, never()).save(any(Employee.class));
+        verifyNoMoreInteractions(employeeRepository);
     }
 
 
