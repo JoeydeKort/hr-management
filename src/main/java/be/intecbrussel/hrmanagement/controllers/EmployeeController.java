@@ -34,7 +34,8 @@ public class EmployeeController {
     @GetMapping("get/{id}")
     public ResponseEntity<?> getEmployeeById(@PathVariable long id) {
         Optional<Employee> foundEmployee = employeeService.getEmployeeById(id);
-        return ResponseEntity.ok(foundEmployee.orElseThrow(() -> new ResourceNotFoundException("Employee", "employee", id)));
+        return ResponseEntity.ok(foundEmployee
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "employee", id)));
     }
 
     @PutMapping("/update/{id}")
