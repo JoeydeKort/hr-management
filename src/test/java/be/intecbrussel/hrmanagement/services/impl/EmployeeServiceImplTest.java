@@ -89,8 +89,8 @@ class EmployeeServiceImplTest {
 
     @Test
     public void givenEmployeeId_whenDeletingAnEmployee_then_ReturnEmpty() {
-
         // given
+        given(employeeRepository.findById(employee.getId())).willReturn(Optional.of(employee));
         willDoNothing().given(employeeRepository).deleteById(employee.getId());
 
         // when
@@ -98,8 +98,7 @@ class EmployeeServiceImplTest {
 
         // then
         verify(employeeRepository, times(1)).deleteById(employee.getId());
-        //verifyNoMoreInteractions(employeeRepository);
-
+        verifyNoMoreInteractions(employeeRepository);
     }
 
 
