@@ -10,8 +10,8 @@ public interface EmployeeService {
 
     Employee addEmployee(Employee employee);
     List<Employee> getAllEmployees();
-    Optional<Employee> getEmployeeById(long id);
-    Employee updateEmployee(Employee updatedEmployee);
+    Optional <Employee> getEmployeeById(long id);
+    Employee updateEmployee(Employee updatedEmployee, long id);
     void deleteEmployee(long id);
     Employee searchEmployee(String name);
 

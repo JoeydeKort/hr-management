@@ -1,6 +1,6 @@
 package be.intecbrussel.hrmanagement.services.impl;
 
-import be.intecbrussel.hrmanagement.exceptions.EmployeeException;
+import be.intecbrussel.hrmanagement.exceptions.ResourceNotFoundException;
 import be.intecbrussel.hrmanagement.models.Employee;
 import be.intecbrussel.hrmanagement.repositories.EmployeeRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -63,7 +63,7 @@ class EmployeeServiceImplTest {
         //given(employeeRepository.save(employee)).willReturn(employee);
 
         // when
-        assertThrows(EmployeeException.class, () -> employeeService.addEmployee(employee));
+        assertThrows(ResourceNotFoundException.class, () -> employeeService.addEmployee(employee));
 
         // then
         verify(employeeRepository, never()).save(any(Employee.class));
@@ -81,14 +81,14 @@ class EmployeeServiceImplTest {
         List<Employee> employeesList = employeeService.getAllEmployees();
 
         // then
-        assertAll("Getting all emplpoyees",
+        assertAll("Getting all employees",
                 () -> assertEquals(2, employeesList.size()),
                 () -> assertFalse(employeesList.isEmpty()),
                 () -> assertEquals(employee, employeesList.get(0)));
     }
 
     @Test
-    public void giveneEmployeeId_whenDeletingAnEmployee_then_ReturnEmpty() {
+    public void givenEmployeeId_whenDeletingAnEmployee_then_ReturnEmpty() {
 
         // given
         willDoNothing().given(employeeRepository).deleteById(employee.getId());
